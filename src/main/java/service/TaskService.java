@@ -2,11 +2,13 @@ package service;
 
 import data.model.Task;
 import data.repository.TaskRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
 import java.util.List;
 
+@ApplicationScoped
 public class TaskService {
     private final TaskRepository taskRepository;
 
