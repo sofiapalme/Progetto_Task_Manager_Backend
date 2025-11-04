@@ -1,4 +1,4 @@
-package data.resource;
+package web.resources;
 
 public class UserResource {
 }

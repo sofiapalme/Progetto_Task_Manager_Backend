@@ -1,4 +1,4 @@
-package data.resource;
+package web.resources;
 
 import data.model.Task;
 import data.repository.TaskRepository;
