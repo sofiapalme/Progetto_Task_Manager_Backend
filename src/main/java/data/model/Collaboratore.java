@@ -1,4 +1,4 @@
-package model;
+package data.model;
 
 import org.bson.types.ObjectId;
 
