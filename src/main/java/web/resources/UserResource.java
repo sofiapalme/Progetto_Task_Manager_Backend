@@ -1,4 +1,4 @@
-package data.resource;
+package web.resources;
 
 import data.model.User;
 import data.repository.UserRepository;

@@ -1,4 +1,4 @@
-package data.resource;
+package web.resources;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
