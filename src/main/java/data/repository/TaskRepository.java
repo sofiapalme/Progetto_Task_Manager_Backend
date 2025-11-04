@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.bson.types.ObjectId;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
@@ -26,7 +27,7 @@ public class TaskRepository implements PanacheMongoRepository<Task> {
         return find("assegnatari", assegnatario).list();
     }
 
-    public List<Task> findByScadenza(String scadenza) {
+    public List<Task> findByScadenza(Date scadenza) {
         return find("data_scadenza", scadenza).list();
     }
 
