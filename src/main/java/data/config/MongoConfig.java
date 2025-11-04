@@ -1,30 +1,29 @@
-package data;
+package data.config;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
+@ApplicationScoped
 public class MongoConfig {
 
-    private static MongoClient mongoClient;
+    @ConfigProperty(name = "mongodb.uri")
+    String uri;
 
-    static {
-        try (InputStream input = MongoConfig.class.getClassLoader().getResourceAsStream("application.properties")) {
-            Properties prop = new Properties();
-            prop.load(input);
+    @ConfigProperty(name = "mongodb.database")
+    String databaseName;
 
-            String uri = prop.getProperty("mongodb.uri");
-            mongoClient = MongoClients.create(uri);
+    private MongoClient client;
 
-        } catch (IOException ex) {
-            throw new RuntimeException("Impossibile leggere application.properties", ex);
+    public MongoClient getClient() {
+        if (client == null) {
+            client = MongoClients.create(uri);
         }
+        return client;
     }
 
-    public static MongoClient getMongoClient() {
-        return mongoClient;
+    public String getDatabaseName() {
+        return databaseName;
     }
 }

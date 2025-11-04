@@ -15,5 +15,5 @@ public class Project {
     private String titolo;
     private String avanzamento;
     private List<String> fasi;
-    private List<Collaboratore> collaboratori ;
+    private List<Collaborator> collaboratori ;
 }
