@@ -10,42 +10,51 @@ import java.util.List;
 
 @ApplicationScoped
 public class TaskService {
+
     private final TaskRepository taskRepository;
 
     public TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
+    // CREA TASK
     public Task createTask(Task task) {
-        taskRepository.persistOrUpdate(task);
-            return task;
+        taskRepository.add(task);  // usa il metodo add del repository
+        return task;
     }
 
+    // TROVA TUTTI I TASK
     public List<Task> getAllTasks() {
-        return taskRepository.findAll().list();
+        return taskRepository.findByFase(null); // o creare un metodo findAll nel repo
     }
 
-    public List<Task> getTasksByFase (String fase) {
+    // TROVA TASK PER FASE
+    public List<Task> getTasksByFase(String fase) {
         return taskRepository.findByFase(fase);
     }
 
-    public List<Task> getTasksByEtichetta (String etichetta) {
+    // TROVA TASK PER ETICHETTA
+    public List<Task> getTasksByEtichetta(String etichetta) {
         return taskRepository.findByEtichetta(etichetta);
     }
 
-    public List<Task> getTasksByAssegnatario (String assegnatario) {
+    // TROVA TASK PER ASSEGNATARIO
+    public List<Task> getTasksByAssegnatario(String assegnatario) {
         return taskRepository.findByAssegnatario(assegnatario);
     }
 
-    public List<Task> getTasksByScadenza (Date scadenza) {
+    // TROVA TASK PER SCADENZA
+    public List<Task> getTasksByScadenza(Date scadenza) {
         return taskRepository.findByScadenza(scadenza);
     }
 
-    public List<Task> getTasksByProgetto (ObjectId progetto) {
+    // TROVA TASK PER PROGETTO
+    public List<Task> getTasksByProgetto(ObjectId progetto) {
         return taskRepository.findByProgetto(progetto);
     }
 
-    public void deleteTask(ObjectId id) {
-        taskRepository.deleteById(id);
+    // ELIMINA TASK
+    public boolean deleteTask(ObjectId id) {
+        return taskRepository.getTaskCollection().deleteOne(new org.bson.Document("_id", id)).getDeletedCount() > 0;
     }
 }
