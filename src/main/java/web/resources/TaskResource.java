@@ -32,44 +32,50 @@ public class TaskResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    public Response getAllTasks() {
+        taskService.getAllTasks();
+        return Response.ok().build();
     }
 
     @GET
     @Path("/fase/{fase}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getTasksByFase (@PathParam("fase") String fase) {
-        return taskService.getTasksByFase(fase);
+    public Response getTasksByFase (@PathParam("fase") String fase) {
+        taskService.getTasksByFase(fase);
+        return Response.ok().build();
     }
 
     @GET
     @Path("/etichetta/{etichetta}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getTasksByEtichetta (@PathParam("etichetta") String etichetta) {
-        return taskService.getTasksByEtichetta(etichetta);
+    public Response getTasksByEtichetta (@PathParam("etichetta") String etichetta) {
+        taskService.getTasksByEtichetta(etichetta);
+        return Response.ok().build();
     }
 
     @GET
     @Path("/assegnatario/{assegnatario}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getTasksByAssegnatario (@PathParam("assegnatario") String assegnatario) {
-        return taskService.getTasksByAssegnatario(assegnatario);
+    public Response getTasksByAssegnatario (@PathParam("assegnatario") String assegnatario) {
+        taskService.getTasksByAssegnatario(assegnatario);
+        return Response.ok().build();
     }
 
     @GET
     @Path("/scadenza/{scadenza}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getTasksByScadenza (@PathParam("scadenza") Date scadenza) {
-        return taskService.getTasksByScadenza(scadenza);
+    public Response getTasksByScadenza (@PathParam("scadenza") Date scadenza) {
+        taskService.getTasksByScadenza(scadenza);
+        return Response.ok().build();
     }
 
     @GET
     @Path("/progetto/{progetto}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getTasksByProgetto (@PathParam("progetto") String progettoId) {
+    public Response getTasksByProgetto (@PathParam("progetto") String progettoId) {
         ObjectId progetto = new ObjectId(progettoId);
-        return taskService.getTasksByProgetto(progetto);
+        taskService.getTasksByProgetto(progetto);
+        return Response.ok().build();
     }
 
     @DELETE
