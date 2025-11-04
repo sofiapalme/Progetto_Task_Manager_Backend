@@ -1,5 +1,6 @@
 package data.model;
 
+import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +11,10 @@ import java.util.List;
 @Getter
 @Setter
 @MongoEntity(collection = "projects")
-public class Project {
+public class Project extends PanacheMongoEntity {
     private ObjectId id;
     private String titolo;
     private String avanzamento;
     private List<String> fasi;
-    private List<Collaboratore> collaboratori ;
+    private List<Collaborator> collaboratori ;
 }
