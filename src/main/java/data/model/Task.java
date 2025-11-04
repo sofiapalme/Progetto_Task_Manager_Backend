@@ -1,4 +1,4 @@
-package model;
+package data.model;
 
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.Getter;
