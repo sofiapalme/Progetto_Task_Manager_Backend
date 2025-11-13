@@ -19,7 +19,9 @@ public class TaskRepository {
     @Inject
     MongoConfig config;
 
-    /** Ottiene la collection tasks */
+    /**
+     * Ottiene la collection tasks
+     */
     public MongoCollection<Document> getTaskCollection() {
         return config.getClient()
                 .getDatabase(config.getDatabaseName())
@@ -81,7 +83,15 @@ public class TaskRepository {
         return tasks;
     }
 
-    /** Converte un Document in Task */
+    public boolean deleteById(ObjectId id) {
+        var result = getTaskCollection().deleteOne(Filters.eq("_id", id));
+
+        return result.getDeletedCount() > 0;
+    }
+
+    /**
+     * Converte un Document in Task
+     */
     private Task docToTask(Document doc) {
         if (doc == null) return null;
 
