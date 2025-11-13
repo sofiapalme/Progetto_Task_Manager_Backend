@@ -25,7 +25,7 @@ public class TaskService {
 
     // TROVA TUTTI I TASK
     public List<Task> getAllTasks() {
-        return taskRepository.findByFase(null); // o creare un metodo findAll nel repo
+        return taskRepository.getAll();
     }
 
     // TROVA TASK PER FASE
