@@ -46,6 +46,12 @@ public class TaskRepository {
         return docToTask(doc);
     }
 
+    public List<Task> findAll() {
+        List<Task> tasks = new ArrayList<>();
+        getTaskCollection().find().forEach(doc -> tasks.add(docToTask(doc)));
+        return tasks;
+    }
+
     public List<Task> findByFase(String fase) {
         List<Task> tasks = new ArrayList<>();
         getTaskCollection().find(Filters.eq("fase", fase))
