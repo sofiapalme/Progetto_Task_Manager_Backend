@@ -16,6 +16,20 @@ public class UserRepository {
     @Inject
     MongoConfig config;
 
+    public User authenticate(String email, String password) {
+        User user = findByEmail(email);
+        if (user == null) {
+            return null;
+        }
+
+        boolean matches = BCrypt.checkpw(password, user.getPassword());
+        if (matches) {
+            return user;
+        } else {
+            return null;
+        }
+    }
+
     /** Ottiene la collection users */
     private MongoCollection<Document> getUserCollection() {
         return config.getClient()
