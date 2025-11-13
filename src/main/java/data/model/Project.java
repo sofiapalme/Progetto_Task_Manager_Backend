@@ -19,11 +19,10 @@ public class Project extends PanacheMongoEntity {
     public Project() {
     }
 
-    public Project(ObjectId id, String titolo, String descrizione, String avanzamento, List<String> fasi, boolean completato, List<Collaborator> team) {
+    public Project(ObjectId id, String titolo, String descrizione, List<String> fasi, boolean completato, List<Collaborator> team) {
         this.id = id;
         this.titolo = titolo;
         this.descrizione = descrizione;
-        this.avanzamento = avanzamento;
         this.fasi = fasi;
         this.completato = completato;
         this.team = team;
@@ -51,14 +50,6 @@ public class Project extends PanacheMongoEntity {
 
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
-    }
-
-    public String getAvanzamento() {
-        return avanzamento;
-    }
-
-    public void setAvanzamento(String avanzamento) {
-        this.avanzamento = avanzamento;
     }
 
     public List<String> getFasi() {

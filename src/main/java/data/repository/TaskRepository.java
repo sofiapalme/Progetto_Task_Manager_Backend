@@ -4,16 +4,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import data.config.MongoConfig;
 import data.model.Task;
-import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.core.Response;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import web.model.token.UsernameUpdateRequest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +38,7 @@ public class TaskRepository {
 
         getTaskCollection().insertOne(doc);
 
-        task.id = doc.getObjectId("_id");
+        task.id = doc.getObjectId("_id");;
     }
 
     public List<Task> getAll(){
@@ -120,6 +114,15 @@ public class TaskRepository {
     }
 
     /** Converte un Document in Task */
+    public boolean deleteById(ObjectId id) {
+        var result = getTaskCollection().deleteOne(Filters.eq("_id", id));
+
+        return result.getDeletedCount() > 0;
+    }
+
+    /**
+     * Converte un Document in Task
+     */
     private Task docToTask(Document doc) {
         if (doc == null) return null;
 
