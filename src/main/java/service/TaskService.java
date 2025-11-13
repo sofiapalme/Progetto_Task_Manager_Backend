@@ -57,4 +57,8 @@ public class TaskService {
     public boolean deleteTask(ObjectId id) {
         return taskRepository.getTaskCollection().deleteOne(new org.bson.Document("_id", id)).getDeletedCount() > 0;
     }
+
+    public boolean updateTask (Task task) {
+        return taskRepository.update(task);
+    }
 }

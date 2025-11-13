@@ -13,6 +13,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
+import web.model.token.EmailUpdateRequest;
+import web.model.token.PasswordUdateRequest;
+import web.model.token.UsernameUpdateRequest;
 
 @DenyAll
 @Path("/users")
@@ -89,9 +92,9 @@ public class UserResource {
     @PermitAll
     @PUT
     @Path("/{id}/password")
-    public Response updatePassword(@PathParam("id") String id, String newPassword) {
+    public Response updatePassword(@PathParam("id") String id, PasswordUdateRequest newPassword) {
         // Hash della nuova password
-        String hashed = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        String hashed = BCrypt.hashpw(newPassword.getPassword(), BCrypt.gensalt());
         boolean updated = repo.updatePassword(id, hashed);
 
         if (!updated)
@@ -108,8 +111,9 @@ public class UserResource {
     @PermitAll
     @PUT
     @Path("/{id}/email")
-    public Response updateEmail(@PathParam("id") String id, String newEmail) {
-        boolean updated = repo.updateEmail(id, newEmail);
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateEmail(@PathParam("id") String id, EmailUpdateRequest request) {
+        boolean updated = repo.updateEmail(id, request.getEmail());
 
         if (!updated)
             return Response.status(Response.Status.NOT_FOUND)
@@ -125,8 +129,8 @@ public class UserResource {
     @PermitAll
     @PUT
     @Path("/{id}/username")
-    public Response updateUsername(@PathParam("id") String id, String newUsername) {
-        boolean updated = repo.updateUsername(id, newUsername);
+    public Response updateUsername(@PathParam("id") String id, UsernameUpdateRequest username) {
+        boolean updated = repo.updateUsername(id, username.getUsername());
 
         if (!updated)
             return Response.status(Response.Status.NOT_FOUND)

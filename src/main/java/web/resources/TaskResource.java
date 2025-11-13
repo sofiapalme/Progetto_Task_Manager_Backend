@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 import service.TaskService;
+import web.model.token.UsernameUpdateRequest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -102,5 +103,22 @@ public class TaskResource {
     public void deleteTask(@PathParam("id") String id) {
         ObjectId key = new ObjectId(id);
         taskService.deleteTask(key);
+    }
+
+    @PUT
+    @Path("/modifica/{id}")
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateTask(@PathParam("id") String id, Task task) {
+        task.id = new ObjectId(id); // accesso diretto al campo id di PanacheMongoEntity
+        boolean updated = taskService.updateTask(task);
+
+        if (!updated)
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Task non trovato.")
+                    .build();
+
+        return Response.ok("Task aggiornata.").build();
     }
 }

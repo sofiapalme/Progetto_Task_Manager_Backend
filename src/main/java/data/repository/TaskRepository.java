@@ -4,10 +4,16 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import data.config.MongoConfig;
 import data.model.Task;
+import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Response;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import web.model.token.UsernameUpdateRequest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +44,7 @@ public class TaskRepository {
 
         getTaskCollection().insertOne(doc);
 
-        task.id = doc.getObjectId("_id");;
+        task.id = doc.getObjectId("_id");
     }
 
     public List<Task> getAll(){
@@ -90,6 +96,27 @@ public class TaskRepository {
         getTaskCollection().find(Filters.eq("idProgetto", idProgetto))
                 .forEach(doc -> tasks.add(docToTask(doc)));
         return tasks;
+    }
+
+    public boolean update(Task task) {
+        if (task.id == null) return false;
+
+        Document updateDoc = new Document()
+                .append("titolo", task.getTitolo())
+                .append("descrizione", task.getDescrizione())
+                .append("fase", task.getFase())
+                .append("etichette", task.getEtichette())
+                .append("assegnatari", task.getAssegnatari())
+                .append("data_scadenza", task.getDataScadenza())
+                .append("idProgetto", task.getIdProgetto());
+
+        Document setDoc = new Document("$set", updateDoc);
+
+        long modifiedCount = getTaskCollection()
+                .updateOne(new Document("_id", task.id), setDoc)
+                .getModifiedCount();
+
+        return modifiedCount > 0;
     }
 
     /** Converte un Document in Task */
