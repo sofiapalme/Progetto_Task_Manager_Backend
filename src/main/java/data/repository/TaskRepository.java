@@ -40,12 +40,23 @@ public class TaskRepository {
 
         getTaskCollection().insertOne(doc);
 
-        task.setId(doc.getObjectId("_id"));
+        task.id = doc.getObjectId("_id");;
+    }
+
+    public List<Task> getAll(){
+        List<Task> tasks = new ArrayList<>();
+        return tasks;
     }
 
     public Task findById(ObjectId id) {
         Document doc = getTaskCollection().find(Filters.eq("_id", id)).first();
         return docToTask(doc);
+    }
+
+    public List<Task> findAll() {
+        List<Task> tasks = new ArrayList<>();
+        getTaskCollection().find().forEach(doc -> tasks.add(docToTask(doc)));
+        return tasks;
     }
 
     public List<Task> findByFase(String fase) {
@@ -71,7 +82,7 @@ public class TaskRepository {
 
     public List<Task> findByScadenza(Date scadenza) {
         List<Task> tasks = new ArrayList<>();
-        getTaskCollection().find(Filters.eq("data_scadenza", scadenza))
+        getTaskCollection().find(Filters.gte("data_scadenza", scadenza))
                 .forEach(doc -> tasks.add(docToTask(doc)));
         return tasks;
     }
@@ -96,7 +107,7 @@ public class TaskRepository {
         if (doc == null) return null;
 
         Task task = new Task();
-        task.setId(doc.getObjectId("_id"));
+        task.id = doc.getObjectId("_id");                // id pubblico di Panache
         task.setTitolo(doc.getString("titolo"));
         task.setDescrizione(doc.getString("descrizione"));
         task.setFase(doc.getString("fase"));

@@ -7,6 +7,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.bson.types.ObjectId;
 import service.TaskService;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -68,7 +71,17 @@ public class TaskResource {
     @GET
     @Path("/scadenza/{scadenza}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasksByScadenza (@PathParam("scadenza") Date scadenza) {
+    public Response getTasksByScadenza (@PathParam("scadenza") String scadenzaStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date scadenza;
+        try {
+            scadenza = sdf.parse(scadenzaStr);
+        } catch (ParseException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Formato data non valido. Usa yyyy-MM-dd")
+                    .build();
+        }
+
         List<Task> taskScadenzaList = taskService.getTasksByScadenza(scadenza);
         return Response.ok(taskScadenzaList).build();
     }
@@ -85,7 +98,7 @@ public class TaskResource {
 
     @PermitAll
     @DELETE
-    @Path("/{id}")
+    @Path("/elimina/{id}")
     public void deleteTask(@PathParam("id") String id) {
         ObjectId key = new ObjectId(id);
         taskService.deleteTask(key);
