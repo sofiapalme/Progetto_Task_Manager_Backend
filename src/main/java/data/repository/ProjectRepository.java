@@ -15,7 +15,7 @@ import java.util.List;
 public class ProjectRepository implements PanacheMongoRepository<Project> {
 
     public List<Project> getAllProjectsByUser(ObjectId id) {
-        return find("collaboratori.idUser in ?1", List.of(id)).list();
+        return find("team.idUser in ?1", List.of(id)).list();
     }
 
 
