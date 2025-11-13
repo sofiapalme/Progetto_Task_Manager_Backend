@@ -20,12 +20,14 @@ public class ProjectResource  {
         this.projectRepository = projectRepository;
     }
 
+
+
     @GET
     @Path("/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Project> listProjectsByUser(
             @PathParam("userId") String userId
     ) {
-        return projectRepository.find("collaboratori.idUser in ?1", List.of(userId)).list();
+        return projectRepository.find("team.idUser in ?1", List.of(userId)).list();
     }
 }

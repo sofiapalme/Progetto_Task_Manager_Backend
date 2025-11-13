@@ -5,6 +5,8 @@ import com.mongodb.client.MongoDatabase;
 import data.config.MongoConfig;
 import data.model.User;
 import data.repository.UserRepository;
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -12,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
 
+@DenyAll
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -32,6 +35,7 @@ public class UserResource {
     // -----------------------
     // REGISTRAZIONE UTENTE
     // -----------------------
+    @PermitAll
     @POST
     public Response addUser(User user) {
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
@@ -65,6 +69,7 @@ public class UserResource {
     // -----------------------
     // TROVA UTENTE PER EMAIL
     // -----------------------
+    @PermitAll
     @GET
     @Path("/{email}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -81,6 +86,7 @@ public class UserResource {
     // -----------------------
     // AGGIORNA PASSWORD
     // -----------------------
+    @PermitAll
     @PUT
     @Path("/{id}/password")
     public Response updatePassword(@PathParam("id") String id, String newPassword) {
@@ -99,6 +105,7 @@ public class UserResource {
     // -----------------------
     // AGGIORNA EMAIL
     // -----------------------
+    @PermitAll
     @PUT
     @Path("/{id}/email")
     public Response updateEmail(@PathParam("id") String id, String newEmail) {
@@ -115,6 +122,7 @@ public class UserResource {
     // -----------------------
     // AGGIORNA USERNAME
     // -----------------------
+    @PermitAll
     @PUT
     @Path("/{id}/username")
     public Response updateUsername(@PathParam("id") String id, String newUsername) {

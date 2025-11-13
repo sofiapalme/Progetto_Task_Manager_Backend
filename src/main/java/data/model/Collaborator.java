@@ -5,14 +5,14 @@ import org.bson.types.ObjectId;
 public class Collaborator {
 
     private ObjectId idUser;
-    private String status;
+    private Role role;
 
     public Collaborator() {
     }
 
-    public Collaborator(ObjectId idUser, String status) {
+    public Collaborator(ObjectId idUser, Role role) {
         this.idUser = idUser;
-        this.status = status;
+        this.role = role;
     }
 
     public ObjectId getIdUser() {
@@ -23,11 +23,11 @@ public class Collaborator {
         this.idUser = idUser;
     }
 
-    public String getStatus() {
-        return status;
+    public Role getRole() {
+        return role;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
