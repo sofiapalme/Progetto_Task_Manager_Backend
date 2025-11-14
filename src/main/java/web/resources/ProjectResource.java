@@ -1,7 +1,6 @@
 package web.resources;
 
 import data.model.Project;
-import data.repository.ProjectRepository;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -50,9 +49,16 @@ public class ProjectResource  {
 
     @DELETE
     @Path("/{projectId}")
-    public void deleteProject(@PathParam("projectId") String projectId) {
+    public Response deleteProject(@PathParam("projectId") String projectId) {
         ObjectId id = new ObjectId(projectId);
-        projectService.deleteProject(id);
+        boolean deleted = projectService.deleteProject(id);
+
+        if (!deleted)
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Progetto non trovato.")
+                    .build();
+
+        return Response.ok("Progetto eliminato.").build();
     }
 
 }
