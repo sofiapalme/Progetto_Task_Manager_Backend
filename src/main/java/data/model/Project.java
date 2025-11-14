@@ -11,21 +11,22 @@ public class Project extends PanacheMongoEntity {
     private ObjectId id;
     private String titolo;
     private String descrizione;
-    private String avanzamento;
     private List<String> fasi;
     private boolean completato;
-    private List<Collaborator> team;
+    private List<User> team;
+    private User creatore;
 
     public Project() {
     }
 
-    public Project(ObjectId id, String titolo, String descrizione, List<String> fasi, boolean completato, List<Collaborator> team) {
+    public Project(ObjectId id, String titolo, String descrizione, List<String> fasi, boolean completato, List<User> team, User creatore) {
         this.id = id;
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.fasi = fasi;
         this.completato = completato;
         this.team = team;
+        this.creatore = creatore;
     }
 
     public ObjectId getId() {
@@ -68,11 +69,15 @@ public class Project extends PanacheMongoEntity {
         this.completato = completato;
     }
 
-    public List<Collaborator> getTeam() {
+    public List<User> getTeam() {
         return team;
     }
 
-    public void setTeam(List<Collaborator> team) {
+    public void setTeam(List<User> team) {
         this.team = team;
     }
+
+    public User getCreatore() { return creatore; }
+
+    public void setCreatore(User creatore) { this.creatore = creatore; }
 }
