@@ -5,17 +5,22 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.bson.types.ObjectId;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import service.AuthorizationService;
 import service.ProjectService;
 
 import java.util.List;
 
 @Path("/api/projects")
 public class ProjectResource  {
-
     private final ProjectService projectService;
+    private final AuthorizationService authorizationService;
+    private final JsonWebToken jwt;
 
-    public ProjectResource(ProjectService projectService) {
+    public ProjectResource(ProjectService projectService, AuthorizationService authorizationService, JsonWebToken jwt) {
         this.projectService = projectService;
+        this.authorizationService = authorizationService;
+        this.jwt = jwt;
     }
 
     @POST
@@ -51,6 +56,14 @@ public class ProjectResource  {
     @Path("/{projectId}")
     public Response deleteProject(@PathParam("projectId") String projectId) {
         ObjectId id = new ObjectId(projectId);
+        String email = jwt.getName();
+
+        boolean authorized = authorizationService.canDeleteProject(id, email);
+
+        if (!authorized) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         boolean deleted = projectService.deleteProject(id);
 
         if (!deleted)
@@ -60,5 +73,4 @@ public class ProjectResource  {
 
         return Response.ok("Progetto eliminato.").build();
     }
-
 }

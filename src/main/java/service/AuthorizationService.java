@@ -19,12 +19,14 @@ public class AuthorizationService {
 
     public boolean canDeleteProject(ObjectId projectId, String email) {
         Project project = projectRepository.findById(projectId);
+
+        if(project == null) return false;
+
         User creatore = project.getCreatore();
         User utenteLoggato = userRepository.findByEmail(email);
 
-        if (creatore == null) {
-            return false;
-        }
+        if (creatore == null) return false;
+
         return creatore.getId().equals(utenteLoggato.getId());
     }
 }
