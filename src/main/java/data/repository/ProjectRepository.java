@@ -4,6 +4,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import data.config.MongoConfig;
 import data.model.Project;
+import data.model.User;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -51,6 +52,14 @@ public class ProjectRepository implements PanacheMongoRepository<Project> {
         return find("team.idUser in ?1", List.of(id)).list();
     }
 
+    public Project findById(ObjectId id) {
+        Document doc = getProjectCollection().find(Filters.eq("_id", id)).first();
+        if (doc == null) {
+            return null;
+        }
+        return docToProject(doc);
+    }
+
     public void updateProject(ObjectId projectId, Project project) {
         List<Document> teamDocs = project.getTeam().stream()
                 .map(user -> new Document()
@@ -60,24 +69,56 @@ public class ProjectRepository implements PanacheMongoRepository<Project> {
                 .collect(Collectors.toList());
 
         Document doc = new Document("titolo", project.getTitolo())
-                .append("descrizione", project.getDescrizione())
-                .append("fasi", project.getFasi())
-                .append("completato", project.isCompletato())
-                .append("team", teamDocs)
-                .append("creatore", new Document()
-                        .append("_id", project.getCreatore().getId())
-                        .append("username", project.getCreatore().getUsername())
-                        .append("email", project.getCreatore().getEmail())
-                );
+            .append("descrizione", project.getDescrizione())
+            .append("fasi", project.getFasi())
+            .append("completato", project.isCompletato())
+            .append("team", teamDocs)
+            .append("creatore", new Document()
+                    .append("_id", project.getCreatore().getId())
+                    .append("username", project.getCreatore().getUsername())
+                    .append("email", project.getCreatore().getEmail())
+            );
 
         getProjectCollection().replaceOne(Filters.eq("_id", projectId), doc);
     }
-
 
     public boolean deleteProject(ObjectId projectId) {
         var result = getProjectCollection().deleteOne(Filters.eq("_id", projectId));
         return result.getDeletedCount() > 0;
     }
+
+    private Project docToProject(Document doc) {
+        Project project = new Project();
+        project.setId(doc.getObjectId("_id"));
+        project.setTitolo(doc.getString("titolo"));
+        project.setDescrizione(doc.getString("descrizione"));
+        project.setFasi((List<String>) doc.get("fasi"));
+        project.setCompletato(doc.getBoolean("completato", false));
+
+        List<Document> teamDocs = (List<Document>) doc.get("team");
+        if (teamDocs != null) {
+            List<User> team = teamDocs.stream().map(d -> {
+                User u = new User();
+                u.setId(d.getObjectId("_id"));
+                u.setUsername(d.getString("username"));
+                u.setEmail(d.getString("email"));
+                return u;
+            }).collect(Collectors.toList());
+            project.setTeam(team);
+        }
+
+        Document creatorDoc = (Document) doc.get("creatore");
+        if (creatorDoc != null) {
+            User creator = new User();
+            creator.setId(creatorDoc.getObjectId("_id"));
+            creator.setUsername(creatorDoc.getString("username"));
+            creator.setEmail(creatorDoc.getString("email"));
+            project.setCreatore(creator);
+        }
+
+        return project;
+    }
+
 
 //    private Project docToProject(Document doc) {
 //        if (doc == null) return null;
