@@ -1,29 +1,36 @@
 package service;
 
-import data.model.Collaborator;
 import data.model.Project;
-import data.model.Role;
+import data.model.User;
 import data.repository.ProjectRepository;
+import data.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class ProjectService {
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     public Project createProject(Project project, ObjectId userId) {
-        List<Collaborator> team = new ArrayList<>();
-        team.add(new Collaborator(userId, Role.OWNER));
-        project.setTeam(team);
-        
+        User creatore = userRepository.findById(userId);
+        project.setCreatore(creatore);
+
+        List<User> teamUsers = project.getTeam().stream()
+                .map(u -> userRepository.findByEmail(u.getEmail()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        project.setTeam(teamUsers);
+
         projectRepository.createProject(project);
         return project;
     }
@@ -33,8 +40,19 @@ public class ProjectService {
     }
 
     public void updateProject(ObjectId projectId, Project project) {
+        Project existingProject = projectRepository.findById(projectId);
+
+        List<User> teamUsers = project.getTeam().stream()
+                .map(u -> userRepository.findByEmail(u.getEmail()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        project.setTeam(teamUsers);
+
+        project.setCreatore(existingProject.getCreatore());
+
         projectRepository.updateProject(projectId, project);
     }
+
 
     public boolean deleteProject(ObjectId projectId) {
         return projectRepository.deleteProject(projectId);

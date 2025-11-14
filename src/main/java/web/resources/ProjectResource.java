@@ -13,20 +13,20 @@ import java.util.List;
 @Path("/api/projects")
 public class ProjectResource  {
 
-    private final ProjectRepository projectRepository;
     private final ProjectService projectService;
 
-    public ProjectResource(ProjectRepository projectRepository, ProjectService projectService) {
-        this.projectRepository = projectRepository;
+    public ProjectResource(ProjectService projectService) {
         this.projectService = projectService;
     }
 
     @POST
-    @Path("/create")
+    @Path("/create/{userId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createProject(Project project) {
-        projectRepository.createProject(project);
+    public Response createProject(@PathParam("userId") String userId,
+                                  Project project) {
+        ObjectId id = new ObjectId(userId);
+        projectService.createProject(project, id);
         return Response.ok().build();
     }
 
@@ -36,7 +36,8 @@ public class ProjectResource  {
     public List<Project> listProjectsByUser(
             @PathParam("userId") String userId
     ) {
-        return projectRepository.find("team.idUser in ?1", List.of(userId)).list();
+        ObjectId id = new ObjectId(userId);
+        return projectService.getAllProjectsByUser(id);
     }
 
     @PUT

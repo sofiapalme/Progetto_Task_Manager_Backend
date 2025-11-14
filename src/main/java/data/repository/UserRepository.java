@@ -98,4 +98,17 @@ public class UserRepository {
 
         return result.getModifiedCount() > 0;
     }
+
+    public User findById(ObjectId userId) {
+        Document doc = getUserCollection()
+                .find(Filters.eq("_id", userId))
+                .first();
+        if (doc == null) return null;
+        User user = new User();
+        user.setId(doc.getObjectId("_id"));
+        user.setUsername(doc.getString("username"));
+        user.setEmail(doc.getString("email"));
+        user.setPassword(doc.getString("password"));
+        return user;
+    }
 }
